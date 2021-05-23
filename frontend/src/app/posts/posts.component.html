@@ -1,0 +1,76 @@
+<h1>Posts</h1>
+<div class="row">
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-10">
+        <select class="form-control" #u [(ngModel)]="currentSelectedUser" (change)="updateFilter({userId: u.value})">
+          <option value="">Select a User</option>
+          <option *ngFor="let user of users" value="{{user.id}}">{{user.name}}</option>
+        </select>
+
+      </div>
+      <div class="col-2">
+        <button (click)="resetFilter()" class="btn btn-primary">Reset</button>
+      </div>
+    </div>
+    <br>
+
+    <div class="row">
+      <div class="col-md-6">
+        <ul class="list-group posts" >
+          <li
+              *ngFor="let post of pagedPosts"
+              class="list-group-item"
+              (click)="getCurrentPostComments(post)"
+              [class.active]="currentPost == post"
+              >{{ post.title }}</li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <div *ngIf="currentPost" class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">{{ currentPost.title }}
+                <button class="btn btn-edit pull-right" (click)="htmlInsideModal.open()" style="padding: 0;"><i class="glyphicon glyphicon-edit"></i></button>
+                <button class="btn btn-remove pull-right" (click)="deletePost()" style="padding: 0; margin-right: 10px;"><i class="glyphicon glyphicon-remove clickable"></i></button>
+            </h3>
+          </div>
+          <div class="panel-body">{{ currentPost.body }}</div>
+          <hr/>
+          <div *ngFor="let comment of currentPost.comments" class="media">
+            <div class="media-left ">
+                <img class="media-object thumbnail" src="https://picsum.photos/id/{{comment.id}}/80/80" alt="{{comment.id}}">
+            </div>
+            <div class="media-body">
+              <h4 class="media-heading">{{comment.name}}</h4>
+              {{comment.body}}
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+  </div>
+</div>
+
+
+
+<modal #htmlInsideModal>
+  <ng-template #modalHeader><h2>Edit Post Content</h2></ng-template>
+  <ng-template #modalBody>
+    <form (ngSubmit)="editPost(editForm)" #editForm="ngForm">
+      <div class="form-group">
+        <label for="">Post Title</label>
+        <input type="text" class="form-control" id="" aria-describedby="helpId" placeholder="" name="postTitle" #postTitle
+          [ngModel]="currentPost.title" />
+      </div>
+      <div class="form-group">
+        <label for="">Post Body</label>
+        <textarea rows="4" cols="50" class="form-control" id="" aria-describedby="helpId" placeholder="" name="postBody" #postBody
+        [ngModel]="currentPost.body"></textarea>
+      </div>
+      <div class="form-group pull-right">
+        <button #closeModal type="button" style="margin-right: 20px;" class="btn btn-danger float-right" (click)="htmlInsideModal.close()"> Cancel </button>
+        <button type="submit" class="btn btn-primary float-right"> Update </button>
+      </div>
+    </form>
+  </ng-template>
+</modal>

@@ -1,0 +1,187 @@
+<div class="container-xl">
+  <div class="table-responsive">
+    <div class="table-wrapper">
+      <div class="table-title">
+        <div class="row">
+          <div class="col-sm-5">
+            <h2>User <b>Management</b></h2>
+          </div>
+          <div class="col-sm-7">
+            <a (click)="ifEditUser=false;resetForm()" class="btn btn-secondary" data-toggle="modal"
+              data-target="#addNewUserModal"><i class="material-icons">&#xE147;</i> <span>Add New
+                User</span></a>
+            <a download="Users Data.csv" [href]="exportToCsv()" class="btn btn-secondary"><i class="material-icons">&#xE24D;</i> <span>Export to
+                csv</span></a>
+            <a class="btn btn-secondary" (click)="insertUsersIfNoUserExists(true)"><i
+                class="material-icons">refresh</i> <span>Reset Users</span></a>
+          </div>
+        </div>
+      </div>
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th class="text-align-center">Gender</th>
+            <th>Date Created</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let i = index;let user of userList">
+            <td>{{ findIndex(user.id) + 1 }}</td>
+            <td><a href="#" title="{{user.email}}" data-toggle="tooltip"><img src="../../assets/avatars/{{getGenderIcon(user.gender)}}.jpeg"
+                  class="img-fluid rounded-circle content" style="height: 50px; width: 50px;" alt="Avatar"> {{
+                                user.name }} </a>
+            </td>
+            <td class="text-align-center"><a class="{{getGenderIcon(user.gender) == 'male' ? 'settings' : getGenderIcon(user.gender) == 'female' ? 'delete' : 'edit'}}"
+                title={{user.gender}} data-toggle="tooltip"><i class="material-icons">{{ getGenderIcon(user.gender) }}</i></a>
+            </td>
+            <td>{{ user.created_at | date }}</td>
+            <td><span
+                class="
+                {{user.status == 'Active' ? 'status text-success' : user.status == 'Inactive' ? 'status text-warning' : 'status text-danger' }}">&bull;</span>
+              {{ user.status }}</td>
+            <td>
+              <a (click)="
+              ifEditUser=true;
+              userEditFormSetValues(user)
+              "
+              data-toggle="modal"
+              data-target="#addNewUserModal"
+              class="edit" ><i class="material-icons">edit</i></a>
+              <a (click)="deleteUser(user.id)" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">delete</i></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="clearfix">
+        <div class="hint-text">Showing <b>{{users.length > pageSize ? pageSize : users.length}}</b> out of <b>{{totalEntries}}</b> entries</div>
+        <ul class="pagination">
+          <jw-pagination [items]="users" [initialPage]="initialPage" [pageSize]="pageSize"
+            (changePage)="onChangePage($event)"></jw-pagination>
+
+          <!--
+            <li class="page-item disabled"><a href="#">Previous</a></li>
+            <li class="page-item"><a href="#" class="page-link">1</a></li>
+            <li class="page-item"><a href="#" class="page-link">2</a></li>
+            <li class="page-item active"><a href="#" class="page-link">3</a></li>
+            <li class="page-item"><a href="#" class="page-link">4</a></li>
+            <li class="page-item"><a href="#" class="page-link">5</a></li>
+            <li class="page-item"><a href="#" class="page-link">Next</a></li>
+        -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+      <!-- Modal -->
+      <div class="modal fade" id="addNewUserModal" tabindex="-1" role="dialog" aria-labelledby="addNewUserModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5>{{ ifEditUser? 'Edit' : 'Add' }} User</h5>
+              <button #closeModalButton type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form
+              (ngSubmit)="ifEditUser? userForm.form.valid && addEditUser(userForm, true): userForm.form.valid && addEditUser(userForm)"
+              #userForm="ngForm">
+
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="">User Name</label>
+                  <input type="text" [(ngModel)]="userFormTs.name" class="form-control" aria-describedby="helpId"
+                    placeholder="" name="name" #name="ngModel" required autofocus
+                    [ngClass]="{'is-invalid': !name.valid && (name.dirty || name.touched || userForm.submitted)}" />
+                  <label *ngIf="!name.valid && (name.dirty || name.touched || userForm.submitted)"
+                    id="validation-required-error"
+                    class="error jquery-validation-error small form-text invalid-feedback">
+                    Please Enter User name</label>
+                </div>
+
+                <div class="form-group">
+                  <label for="">email</label>
+                  <input type="email" [(ngModel)]="userFormTs.email" class="form-control" aria-describedby="helpId"
+                    placeholder="" name="email" #email="ngModel" required autofocus
+                    pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                    [ngClass]="{'is-invalid': !email.valid && (email.dirty || email.touched || userForm.submitted)}" />
+                  <label *ngIf="!email.valid && (email.dirty || email.touched || userForm.submitted)"
+                    id="validation-required-error"
+                    class="error jquery-validation-error small form-text invalid-feedback">
+                    Please Enter Email</label>
+                </div>
+
+                <label> Gender </label>
+                <div class="form-group ml-3 mr-2">
+                  <div>
+                    <label class="mr-3">
+                      <input type="radio" class="option-input radio" [(ngModel)]="userFormTs.gender" value="Male"
+                        name="gender" #gender="ngModel" required autofocus
+                        [ngClass]="{'is-invalid': !gender.valid && (gender.dirty || gender.touched || userForm.submitted)}">
+                      Male
+                    </label>
+                    <label class="mr-3">
+                      <input type="radio" class="option-input radio" [(ngModel)]="userFormTs.gender" value="Female"
+                        name="gender" #gender="ngModel" required autofocus
+                        [ngClass]="{'is-invalid': !gender.valid && (gender.dirty || gender.touched || userForm.submitted)}">
+                      Female
+                    </label>
+                    <label class="mr-3">
+                      <input type="radio" class="option-input radio" [(ngModel)]="userFormTs.gender" value="Others"
+                        name="gender" #gender="ngModel" required autofocus
+                        [ngClass]="{'is-invalid': !gender.valid && (gender.dirty || gender.touched || userForm.submitted)}">
+                      Others:
+                    </label>
+                    <div class="ml-4" *ngIf="userFormTs.gender == 'Others'">
+                      <input type="text" [(ngModel)]="userFormTs.otherGenderName" class="form-control" aria-describedby="helpId"
+                        placeholder="" name="gender" #gender="ngModel" required autofocus
+                        [ngClass]="{'is-invalid': !gender.valid && (gender.dirty || gender.touched || userForm.submitted)}" />
+                      <label *ngIf="!gender.valid && (gender.dirty || gender.touched || userForm.submitted)"
+                        id="validation-required-error"
+                        class="error jquery-validation-error small form-text invalid-feedback">
+                        Please Enter Gender</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="ifEditUser">
+                  <label> Status </label>
+                  <div class="form-group ml-3 mr-2">
+                    <div>
+                      <label class="mr-3">
+                        <input type="radio" class="option-input radio" [(ngModel)]="userFormTs.status" name="status"
+                          #status="ngModel" required autofocus value="Active"
+                          [ngClass]="{'is-invalid': !status.valid && (status.dirty || status.touched || userForm.submitted)}">
+                        Active
+                      </label>
+                    </div>
+                    <div>
+                      <label class="mr-3">
+                        <input type="radio" class="option-input radio" [(ngModel)]="userFormTs.status" value="Inactive"
+                          name="status" #status="ngModel" required autofocus
+                          [ngClass]="{'is-invalid': !status.valid && (status.dirty || status.touched || userForm.submitted)}">
+                        Inactive
+                      </label>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
