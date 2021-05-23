@@ -58,4 +58,4 @@
 ### Another feature has been added to reset users from goRest Api. If at all too many crud operations took place for testing, with a single click of a button, the data will be truncated and a set of clean data will be inserted in the database.
 
 
-## on 23/05 I made use of json placceholder api for another problem statement. i have included that code as posts in the navigation bar. It only uses frontend with a fake json api server. Feel free to look into the code. The ui got messed up as i made use of  another bootstrap version in this projeect.
+## few days back, I made use of json placeholder api for another problem statement. I have included that code as posts in the navigation bar. It only uses frontend with a fake json api server. Feel free to look into the code. The ui got messed up as i made use of  another bootstrap version in this project. But the proper project with intended ui will be present in this repo https://github.com/HoLiSchitz/jsonPlaceholderAPI_CRUD
