@@ -1,20 +1,20 @@
 # User Management API
 ## Geting started:
 
-#### clone the git repoitory to your desired path in your file system.
-#### Run 'npm install' command on both frontend and backend folders.
+### clone the git repoitory to your desired path in your file system.
+### Run 'npm install' command on both frontend and backend folders.
 
-#### Start either xampp or mysql-cli and run the commands present in /backend/config/databaseModel.sql
+### Start either xampp or mysql-cli and run the commands present in /backend/config/databaseModel.sql
 
-#### Usually .env file should not be pushed to git as it will have sensitive datas such as api keys and database credentials, but here i have pushed it to git for ease of use since it's only for development.
+### Usually .env file should not be pushed to git as it will have sensitive datas such as api keys and database credentials, but here i have pushed it to git for ease of use since it's only for development.
 
-#### Go to /backend/.env and change your mysql credentials according to your setup. (Usually you might only need to replace DB_PASS to empty string if you have a normal setup)
+### Go to /backend/.env and change your mysql credentials according to your setup. (Usually you might only need to replace DB_PASS to empty string if you have a normal setup)
 
-#### Now start both the frontend and backend servers after navigating into respective directories. For frontend, run 'ng s' command. For backend, run 'npm start' command.
+### Now start both the frontend and backend servers after navigating into respective directories. For frontend, run 'ng s' command. For backend, run 'npm start' command.
 
-#### The server will be hosted in 'http://localhost:4200'
+### The server will be hosted in 'http://localhost:4200'
 
-### NOTE: node app.js or nodemon app.js will not work in backed as this program requires certain parameters to be passed upon running node. Kindly start the app with 'npm start'
+# NOTE: node app.js or nodemon app.js will not work in backed as this program requires certain parameters to be passed upon running node. Kindly start the app with 'npm start'
 
 ## Basic Assumptions
 
